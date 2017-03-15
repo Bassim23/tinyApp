@@ -60,13 +60,17 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {
   let key = generateRandomString();
   urlDatabase[key] = req.body.longURL;
-  console.log(urlDatabase);
-  res.redirect('http://localhost:8080/urls/' + key);
+  res.redirect('/urls/' + key);
 });
 
 //redirects shortURL to full website.
 app.get("/u/:shortURL", (req, res) => {
   res.redirect(urlDatabase[req.params.shortURL]);
+});
+
+app.post('/urls/:id/delete', (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect('/urls');
 });
 
 app.listen(PORT, () => {

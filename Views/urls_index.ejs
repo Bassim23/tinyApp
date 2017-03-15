@@ -4,7 +4,6 @@
   <title>TinyApp</title>
 </head>
 <body>
-
   <header>
   <% include ./partials/_header %>
   </header>
@@ -12,6 +11,11 @@
   <ul>
       <% for (var item in urls){ %>
       <a href='/'><%= item%></a> <li> <%= urls[item] %> </li>
+      <form method="POST" action="/urls/<%=item%>/delete">
+        <p>
+          <button>Delete website</button>
+        </p>
+      </form>
           <% } %>
   </ul>
 </body>
