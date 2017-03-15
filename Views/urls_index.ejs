@@ -10,7 +10,7 @@
 
   <ul>
       <% for (var item in urls){ %>
-      <a href='/'><%= item%></a> <li> <%= urls[item] %> </li>
+      <a href='/urls/<%=item%>'><li> <%= urls[item] %> </li> </a>
       <form method="POST" action="/urls/<%=item%>/delete">
         <p>
           <button>Delete website</button>

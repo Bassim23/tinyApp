@@ -11,6 +11,15 @@
       <%=shortURL%>
       <%=longURL%>
   </ul>
+  <form action="/urls/<%= shortURL %>" method="POST">
+  <p>
+    <label for="longURL">Update</label>
+    <input id="longURL" type="text" name="longURL" value="<%= longURL%>"
+  </p>
+  <p>
+    <button>Update</button>
+  </p>
+</form>
 
 </body>
 </html>

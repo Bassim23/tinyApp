@@ -25,7 +25,12 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-
+/**
+ * if user is logged in:
+*  redirect -> /urls
+*  if user is not logged in:
+*  redirect -> /login
+ */
 app.get("/", (req, res) => {
   res.end("Hello!");
 });
@@ -70,6 +75,11 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post('/urls/:id/delete', (req, res) => {
   delete urlDatabase[req.params.id];
+  res.redirect('/urls');
+});
+
+app.post("/urls/:id", (req, res) => {
+  urlDatabase[req.params.id] = req.body.longURL;
   res.redirect('/urls');
 });
 
