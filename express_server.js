@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080;
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 
 
 //added view engine to use ejs.
