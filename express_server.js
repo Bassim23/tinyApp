@@ -3,7 +3,6 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const cookieParser = require('cookie-parser')
 
-app.use(cookieParser());
 
 //added view engine to use ejs.
 app.set("view engine", "ejs");
@@ -11,6 +10,7 @@ app.set("view engine", "ejs");
 //Added body parser
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 //creates random 6 character string
 function generateRandomString() {
@@ -89,6 +89,11 @@ app.post("/urls/:id", (req, res) => {
 
 app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
+  res.redirect('/');
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
   res.redirect('/');
 });
 
