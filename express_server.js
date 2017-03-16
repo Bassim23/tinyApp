@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080;
+const cookieParser = require('cookie-parser')
+
+app.use(cookieParser());
 
 //added view engine to use ejs.
 app.set("view engine", "ejs");
@@ -81,6 +84,11 @@ app.post('/urls/:id/delete', (req, res) => {
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.longURL;
   res.redirect('/urls');
+});
+
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username);
+  res.redirect('/');
 });
 
 app.listen(PORT, () => {
