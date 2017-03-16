@@ -28,6 +28,19 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
 /**
  * if user is logged in:
 *  redirect -> /urls
@@ -77,7 +90,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(urlDatabase[req.params.shortURL]);
 });
 
-app.post('/urls/:id/delete', (req, res) => {
+app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect('/urls');
 });
@@ -96,6 +109,14 @@ app.post("/logout", (req, res) => {
   res.clearCookie('username');
   res.redirect('/');
 });
+
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+app.post("/register", (req, res) => {
+
+})
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
