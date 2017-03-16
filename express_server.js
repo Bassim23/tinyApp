@@ -47,20 +47,21 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = {username: req.cookies["username"], urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
 //Gives page to enter URL to shorten.
 app.get("/urls/new", (req, res) => {
+  let templateVars = {username: req.cookies["username"]};
   let website = req.params.new;
-  res.render("urls_new");
+  res.render("urls_new", templateVars);
 });
 
 // renders webpage for given id.
 app.get("/urls/:id", (req, res) => {
   let longURL = urlDatabase[req.params.id];
-  let templateVars = { shortURL: req.params.id, longURL: longURL};
+  let templateVars = {username: req.cookies["username"], shortURL: req.params.id, longURL: longURL};
   res.render("urls_show", templateVars);
 });
 
