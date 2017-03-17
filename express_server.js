@@ -22,6 +22,7 @@ function generateRandomString() {
   }
   return text;
 }
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -58,21 +59,24 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = {username: req.cookies["username"], urls: urlDatabase };
+  let userId = req.cookies.userId;
+  let templateVars = {user: users[userId], urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
 //Gives page to enter URL to shorten.
 app.get("/urls/new", (req, res) => {
-  let templateVars = {username: req.cookies["username"]};
-  let website = req.params.new;
+  let userId = req.cookies.userId;
+  let templateVars = {user: users[userId]};
+  // let website = req.params.new;
   res.render("urls_new", templateVars);
 });
 
 // renders webpage for given id.
 app.get("/urls/:id", (req, res) => {
+  let userId = req.cookies.userId;
   let longURL = urlDatabase[req.params.id];
-  let templateVars = {username: req.cookies["username"], shortURL: req.params.id, longURL: longURL};
+  let templateVars = {user: users[userId], shortURL: req.params.id, longURL: longURL};
   res.render("urls_show", templateVars);
 });
 
@@ -98,13 +102,30 @@ app.post("/urls/:id", (req, res) => {
   res.redirect('/urls');
 });
 
+app.get ("/login", (req, res) => {
+  res.render("login");
+});
+
 app.post("/login", (req, res) => {
-  res.cookie('username', req.body.username);
-  res.redirect('/');
+  let user;
+  for (let userId in users) {
+    if (users[userId].email === req.body.email) {
+      user = users[userId];
+      break;
+      }
+    }
+  if (user) {
+    if (user.password === req.body.password) {
+      res.cookie("userId", user.id);
+      res.redirect('/')
+      return;
+    }
+  }
+  res.status(403).send('Bad credentials');
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('userId');
   res.redirect('/');
 });
 
@@ -113,7 +134,6 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-// return (users.filter(function(user) {return user.email === email;}).length > 0)
   function findExistingEmail(email) {
     for (let userId in users) {
       if (users[userId].email === email) {
@@ -136,7 +156,7 @@ app.post("/register", (req, res) => {
       password: req.body.password
     };
     console.log(users);
-    res.cookie(userId, req.body.email);   // JH thinks this isn't optimal
+    res.cookie("userId", userId);
     res.redirect("/");
   }
 });

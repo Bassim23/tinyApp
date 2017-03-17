@@ -3,17 +3,22 @@ ShortURL.com
 </header>
 
 <body>
-  <%if (username) {%>
-  <form action="/logout" method="POST">
-  Username: <%=username%>
-  <button>Logout</button>
-  </form>
+  <% if (user) {%>
+    User: <%= user.email %>
+    <form action="/logout" method="POST">
+      <button>Logout</button>
+    </form>
   <% } else {%>
-  <form action="/login" method="POST">
+    <p>
+      <a href = "/register"> <li>Register </li> </a>
+      <a href = "/login"> <li> Login</li> </a>
+    </p>
+  <% } %>
+
+<!--   <form action="/login" method="POST">
   Login: <input type="text" name="username" id=login >
         <input type="submit" value="Submit">
-  </form>
-  <% }%>
- <p>
- </p>
+  </form> -->
+
+
 </body>
