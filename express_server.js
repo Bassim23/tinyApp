@@ -22,8 +22,6 @@ function generateRandomString() {
   }
   return text;
 }
-generateRandomString();
-
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -115,8 +113,33 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-
-})
+// return (users.filter(function(user) {return user.email === email;}).length > 0)
+  function findExistingEmail(email) {
+    for (let userId in users) {
+      if (users[userId].email === email) {
+        return true;
+      }
+    }
+    return null;
+  }
+  if (!req.body.email || !req.body.password) {
+    res.status(400);
+    res.send("Error: email or password not entered");
+  } else if (findExistingEmail(req.body.email)) {
+    res.status(400);
+    res.send("Error: email already registered");
+  } else {
+    let userId = generateRandomString();
+    users[userId] = {
+      id: userId,
+      email: req.body.email,
+      password: req.body.password
+    };
+    console.log(users);
+    res.cookie(userId, req.body.email);   // JH thinks this isn't optimal
+    res.redirect("/");
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
