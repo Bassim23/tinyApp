@@ -67,9 +67,13 @@ app.get("/urls", (req, res) => {
 //Gives page to enter URL to shorten.
 app.get("/urls/new", (req, res) => {
   let userId = req.cookies.userId;
+  if (userId) {
   let templateVars = {user: users[userId]};
   // let website = req.params.new;
   res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 // renders webpage for given id.
