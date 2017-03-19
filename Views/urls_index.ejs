@@ -5,20 +5,25 @@
 </head>
 <body>
   <header>
-  <% include ./partials/_header %>
+    <% include ./partials/_header %>
   </header>
 
   <ul>
-      <% for (var item in urls){ %>
-     <%=item%> <a href='/'><li><%= urls[item] %> </li> </a>
-      <form method="POST" action="/urls/<%=item%>/delete">
-
-        <a href='/urls/<%=item%>'><li> Edit </li> </a><p>
-
-          <button>Delete website</button>
-        </p>
-      </form>
-          <% } %>
+    <% for (var shortUrl in myUrls){ %>
+      <li>
+        <%=shortUrl%>
+        <a href='/'><%= myUrls[shortUrl] %></a>
+        <a href='/urls/<%=shortUrl%>'><button>Edit</button> </a>
+        <form method="POST" action="/urls/<%=shortUrl%>/delete" style="display:inline">
+            <button>Delete</button>
+        </form>
+      </li>
+    <% } %>
   </ul>
+  <p> <a href='/urls/new'>Create a New Short Link</a> </p>
 </body>
 </html>
+
+
+
+

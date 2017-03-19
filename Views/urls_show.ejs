@@ -13,14 +13,12 @@
   </ul>
   <form action="/urls/<%= shortURL %>" method="POST">
   <p>
-    <label for="longURL">Update</label>
-    <input id="longURL" type="text" name="longURL" value="<%= longURL%>"
-  </p>
-
-  <p>
+    <input id="longURL" type="text" name="longURL" value="<%= longURL%>">
     <button>Update</button>
+  </form>
+  <form method="POST" action="/urls/<%=shortURL%>/delete" style="display:inline">
+    <button>Delete</button>
+  </form>
   </p>
-</form>
-
 </body>
 </html>
