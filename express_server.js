@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 
 //added view engine to use ejs.
@@ -40,12 +41,12 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "1"
+    password: "$2a$10$iZw8NNUO0MOusc96mHu19eWFphfe.//fHDOO73JqswXVE8cbpi5f6"
   },
  "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "2"
+    password: "$2a$10$PlJFjHhRgr4pBaL8dqr6ceTs3tW4q8XBTD3sgaThHOCHeMeVpPswO"
   }
 }
 /**
@@ -183,7 +184,7 @@ app.post("/login", (req, res) => {
     }
   }
   if (user) {
-    if (user.password === req.body.password) {
+    if (bcrypt.compareSync(req.body.password, user.password)) {
       res.cookie("userId", user.id);
       res.redirect('/')
       return;
@@ -227,7 +228,7 @@ app.post("/register", (req, res) => {
     users[userId] = {
       id: userId,
       email: req.body.email,
-      password: req.body.password
+      password: bcrypt.hashSync(req.body.password, 10)
     };
     console.log(users);
     res.cookie("userId", userId);
