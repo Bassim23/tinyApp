@@ -11,13 +11,17 @@
   <ul>
     <% for (var shortUrl in myUrls){ %>
       <li>
-        <%=shortUrl%>
-        <a href='/'><%= myUrls[shortUrl] %></a>
-        <a href='/urls/<%=shortUrl%>'><button>Edit</button> </a>
-        <form method="POST" action="/urls/<%=shortUrl%>/delete" style="display:inline">
-            <button>Delete</button>
-        </form>
+        ShortURL: <a href="/u/<%=shortUrl%>"> localhost:8080/u/<%=shortUrl%> </a>
       </li>
+      <li>
+        LongURL: <%= myUrls[shortUrl] %>
+      </li>
+      <a href='/urls/<%=shortUrl%>'><button>Edit</button> </a>
+      <form method="POST" action="/urls/<%=shortUrl%>/delete" style="display:inline">
+          <button>Delete</button>
+      </form>
+      <p>
+      </p>
     <% } %>
   </ul>
   <p> <a href='/urls/new'>Create a New Short Link</a> </p>

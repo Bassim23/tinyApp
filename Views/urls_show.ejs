@@ -8,8 +8,8 @@
   <% include ./partials/_header %>
   </header>
   <ul>
-      <%=shortURL%>
-      <%=longURL%>
+      <li> ShortURL: localhost:8080/u/<%=shortURL%> </li>
+      <li> Website: <%=longURL%> </li>
   </ul>
   <form action="/urls/<%= shortURL %>" method="POST">
   <p>
