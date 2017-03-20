@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080;
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 
 
@@ -11,7 +11,10 @@ app.set("view engine", "ejs");
 //Added body parser
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: [process.env.SESSION_SECRET || 'development']
+}));
 
 //creates random 6 character string
 function generateRandomString() {
@@ -56,7 +59,7 @@ const users = {
 *  redirect -> /login
  */
 app.get("/", (req, res) => {
-  let userId = req.cookies.userId;
+  let userId = req.session.userId;
   if (userId) {
     res.redirect("/urls");
   } else {
@@ -83,7 +86,7 @@ function findUrlsByUserId (userID) {
 }
 
 app.get("/urls", (req, res) => {
-  let user = users[req.cookies.userId];
+  let user = users[req.session.userId];
   if (user) {
     let myUrls = findUrlsByUserId(user.id);
     console.log(myUrls);
@@ -96,7 +99,7 @@ app.get("/urls", (req, res) => {
 
 //Gives page to enter URL to shorten.
 app.get("/urls/new", (req, res) => {
-  let userId = req.cookies.userId;
+  let userId = req.session.userId;
   if (userId) {
   let templateVars = {user: users[userId]};
   res.render("urls_new", templateVars);
@@ -107,7 +110,7 @@ app.get("/urls/new", (req, res) => {
 
 // renders webpage for given id.
 app.get("/urls/:id", (req, res) => {
-  let userId = req.cookies.userId;
+  let userId = req.session.userId;
     if (!urlDatabase[req.params.id]) {
       res.status(404).send("Error 404: Short URL does not exist!");
   } else if (!userId) {
@@ -122,7 +125,7 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls/:id", (req, res) => {
-  let userId = req.cookies.userId;
+  let userId = req.session.userId;
   if (!urlDatabase[req.params.id]) {
       res.status(404).send("Error 404: Short URL does not exist!");
   } else if (!userId) {
@@ -137,7 +140,7 @@ app.post("/urls/:id", (req, res) => {
 
 //generates a shortURL key with associated input website.
 app.post("/urls", (req, res) => {
-  let user = users[req.cookies.userId]
+  let user = users[req.session.userId]
   if (user) {
     let key = generateRandomString();
     urlDatabase[key] = {
@@ -167,7 +170,7 @@ app.post("/urls/:id/delete", (req, res) => {
 
 
 app.get ("/login", (req, res) => {
-  let userId = req.cookies.userId;
+  let userId = req.session.userId;
   if (userId) {
     res.redirect("/");
   } else {
@@ -185,7 +188,7 @@ app.post("/login", (req, res) => {
   }
   if (user) {
     if (bcrypt.compareSync(req.body.password, user.password)) {
-      res.cookie("userId", user.id);
+      req.session.userId = user.id;
       res.redirect('/')
       return;
     }
@@ -194,12 +197,12 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('userId');
+  req.session = null;
   res.redirect('/');
 });
 
 app.get("/register", (req, res) => {
-  let userId = req.cookies.userId;
+  let userId = req.session.userId;
     if (userId) {
       res.redirect("/");
     } else {
@@ -231,7 +234,7 @@ app.post("/register", (req, res) => {
       password: bcrypt.hashSync(req.body.password, 10)
     };
     console.log(users);
-    res.cookie("userId", userId);
+    req.session.userId = userId;
     res.redirect("/");
   }
 });
