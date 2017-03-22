@@ -1,14 +1,14 @@
 const express = require("express");
-const app = express();
-const PORT = process.env.PORT || 3000;
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
+const bodyParser = require("body-parser");
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 //added view engine to use ejs.
 app.set("view engine", "ejs");
 
 //Added body parser
-const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
   name: 'session',
@@ -67,11 +67,6 @@ app.get("/", (req, res) => {
     res.redirect("/login");
   }
 });
-
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
 
 //function to find URL Database for a given user.
 function findUrlsByUserId (userID) {
@@ -153,8 +148,13 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
-  res.redirect('/urls');
+  let userId = req.session.userId;
+  if (userId === urlDatabase[req.params.id].userID) {
+    delete urlDatabase[req.params.id];
+    res.redirect('/urls');
+  } else {
+    res.status(403).send("Error 403 - Forbidden: You do not have access to this page.");
+  }
 });
 
 
@@ -186,14 +186,12 @@ app.post("/login", (req, res) => {
       break;
     }
   }
-  if (user) {
-    if (bcrypt.compareSync(req.body.password, user.password)) {
+  if (user && bcrypt.compareSync(req.body.password, user.password)) {
       req.session.userId = user.id;
       res.redirect('/');
-      return;
-    }
-  }
+  } else {
   res.status(401).send("401 Error - Bad Credentials");
+  }
 });
 
 app.post("/logout", (req, res) => {
@@ -218,7 +216,7 @@ function findExistingEmail(email) {
       return true;
     }
   }
-  return null;
+  return false;
 }
 
 app.post("/register", (req, res) => {
